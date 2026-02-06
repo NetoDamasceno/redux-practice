@@ -5,7 +5,7 @@ export const CartItemContainer = styled.div`
   align-items: center;
   margin-bottom: 15px;
 
-  p {
+  p, svg {
     color: #222222;
   }
 `;
