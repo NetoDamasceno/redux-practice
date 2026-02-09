@@ -5,4 +5,17 @@ export const addProductToCart = (payload) => ({
   payload,
 });
 
-export const removeProduct = () => {};
+export const removeProductFromCart = (payload) => ({
+  type: CartActionTypes.REMOVE_PRODUCT,
+  payload,
+});
+
+export const inCreaseProductOnCart = (payload) => ({
+  type: CartActionTypes.INCREASE_PRODUCT,
+  payload,
+})
+
+export const deCreaseProductOnCart = (payload) => ({
+  type: CartActionTypes.DECREASE_PRODUCT,
+  payload,
+})
