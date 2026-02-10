@@ -10,12 +10,12 @@ export const removeProductFromCart = (payload) => ({
   payload,
 });
 
-export const inCreaseProductOnCart = (payload) => ({
+export const increaseProductOnCart = (payload) => ({
   type: CartActionTypes.INCREASE_PRODUCT,
   payload,
 })
 
-export const deCreaseProductOnCart = (payload) => ({
+export const decreaseProductOnCart = (payload) => ({
   type: CartActionTypes.DECREASE_PRODUCT,
   payload,
 })
