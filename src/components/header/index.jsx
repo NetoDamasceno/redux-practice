@@ -17,10 +17,9 @@ function Header() {
   // eslint-disable-next-line
   const { products } = useSelector((rootReducer) => rootReducer.cartReducer);
 
-  const productsCount = useSelector(selectProductsCount)
+  const productsCount = useSelector(selectProductsCount);
 
   const dispatch = useDispatch();
-
 
   const handleCartClick = () => {
     setCartIsVisible(true);
@@ -34,16 +33,48 @@ function Header() {
     dispatch(logoutUser());
   };
 
+  const handleLogoClick = () => {
+    setCartIsVisible(false);
+
+    const isAtTop = window.scrollY === 0;
+
+    if (isAtTop) {
+      window.location.reload();
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return (
     <Styles.Container>
-      <Styles.Logo>Redux Shopping</Styles.Logo>
+      <Styles.Logo onClick={handleLogoClick} style={{ cursor: "pointer" }}>
+        Redux Shopping
+      </Styles.Logo>
       <Styles.Buttons>
         {currentUser ? (
-          <div onClick={handleLogoutClick}>Sair</div>
+          <div
+            onClick={handleLogoutClick}
+            className="cursor-pointer transition-all duration-200 hover:text-orange-600 hover:scale-105"
+          >
+            Sair
+          </div>
         ) : (
-          <div onClick={handleLoginClick}>Login</div>
+          <div
+            onClick={handleLoginClick}
+            className="cursor-pointer transition-all duration-200 hover:text-orange-600 hover:scale-105"
+          >
+            Login
+          </div>
         )}
-        <div onClick={handleCartClick}>Carrinho ({productsCount})</div>
+        <div
+          onClick={handleCartClick}
+          className="cursor-pointer transition-all duration-200 hover:text-orange-600 hover:scale-105"
+        >
+          Carrinho ({productsCount})
+        </div>
       </Styles.Buttons>
 
       <Cart isVisible={cartIsVisible} setIsVisible={setCartIsVisible} />
