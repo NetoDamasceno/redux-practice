@@ -1,3 +1,5 @@
+import { ShoppingCart } from "lucide-react";
+
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -71,9 +73,15 @@ function Header() {
         )}
         <div
           onClick={handleCartClick}
-          className="cursor-pointer transition-all duration-200 hover:text-orange-600 hover:scale-105"
+          className="relative cursor-pointer transition-all duration-200 hover:text-orange-600 hover:scale-105"
         >
-          Carrinho ({productsCount})
+          <ShoppingCart size={24} />
+
+          {productsCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-orange-600 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 transition-all duration-300">
+              {productsCount}
+            </span>
+          )}
         </div>
       </Styles.Buttons>
 
