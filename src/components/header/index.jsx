@@ -9,11 +9,13 @@ import Cart from "../cart/index";
 // Styles
 import * as Styles from "./styles";
 
-import { loginUser, logoutUser } from "../../redux/user/actions";
+import LoginModal from "../login-modal";
+import { login, logout } from "../../redux/user/slice";
 import { selectProductsCount } from "../../redux/cart/cart.selectors";
 
 function Header() {
   const [cartIsVisible, setCartIsVisible] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   const { currentUser } = useSelector((rootReducer) => rootReducer.userReducer);
   // eslint-disable-next-line
@@ -28,11 +30,11 @@ function Header() {
   };
 
   const handleLoginClick = () => {
-    dispatch(loginUser({ name: "Neto", email: "neto@damasceno.com" }));
+    setIsLoginOpen(true);
   };
 
   const handleLogoutClick = () => {
-    dispatch(logoutUser());
+    dispatch(logout());
   };
 
   const handleLogoClick = () => {
@@ -49,7 +51,6 @@ function Header() {
       });
     }
   };
-
   return (
     <Styles.Container>
       <Styles.Logo onClick={handleLogoClick} style={{ cursor: "pointer" }}>
@@ -73,7 +74,7 @@ function Header() {
         )}
         <div
           onClick={handleCartClick}
-          className="relative cursor-pointer transition-all duration-200 hover:text-orange-600 hover:scale-105"
+          className="relative group cursor-pointer transition-all duration-200 hover:text-orange-600 hover:scale-105"
         >
           <ShoppingCart size={24} />
 
@@ -82,10 +83,18 @@ function Header() {
               {productsCount}
             </span>
           )}
+
+          {productsCount === 0 && (
+            <div className="absolute right-0 mt-4 w-56 bg-white text-gray-700 text-sm rounded-md shadow-lg p-4 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 pointer-events-none">
+              Não há produtos ainda
+            </div>
+          )}
         </div>
       </Styles.Buttons>
 
       <Cart isVisible={cartIsVisible} setIsVisible={setCartIsVisible} />
+
+      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
     </Styles.Container>
   );
 }
