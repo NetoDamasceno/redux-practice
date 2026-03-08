@@ -13,6 +13,8 @@ import LoginModal from "../login-modal";
 import { login, logout } from "../../redux/user/slice";
 import { selectProductsCount } from "../../redux/cart/cart.selectors";
 
+import UserDropdown from "../user-dropdown";
+
 function Header() {
   const [cartIsVisible, setCartIsVisible] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
@@ -31,10 +33,6 @@ function Header() {
 
   const handleLoginClick = () => {
     setIsLoginOpen(true);
-  };
-
-  const handleLogoutClick = () => {
-    dispatch(logout());
   };
 
   const handleLogoClick = () => {
@@ -58,12 +56,7 @@ function Header() {
       </Styles.Logo>
       <Styles.Buttons>
         {currentUser ? (
-          <div
-            onClick={handleLogoutClick}
-            className="cursor-pointer transition-all duration-200 hover:text-orange-600 hover:scale-105"
-          >
-            Sair
-          </div>
+          <UserDropdown currentUser={currentUser} />
         ) : (
           <div
             onClick={handleLoginClick}
@@ -72,6 +65,7 @@ function Header() {
             Login
           </div>
         )}
+
         <div
           onClick={handleCartClick}
           className="relative group cursor-pointer transition-all duration-200 hover:text-orange-600 hover:scale-105"
