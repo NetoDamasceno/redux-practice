@@ -1,13 +1,17 @@
 import { useState, useRef, useEffect } from "react";
 import LogoutModal from "../logout-modal";
 
+import { getAvatarColor, getInitial } from "../../utils/avatarColor";
+
 function UserDropdown({ currentUser }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
 
   const dropdownRef = useRef(null);
 
-  // fechar ao clicar fora
+  const avatarColor = getAvatarColor(currentUser.name);
+  const initial = getInitial(currentUser.name);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -23,18 +27,28 @@ function UserDropdown({ currentUser }) {
   }, []);
 
   return (
-    <div ref={dropdownRef} className="relative">
-      {/* Nome do usuário */}
+    <div ref={dropdownRef} className="relative flex items-center gap-2">
+      
+      {/* Avatar + Nome */}
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="cursor-pointer font-medium text-white transition-all duration-200 hover:text-orange-500 hover:scale-105"
+        className="flex items-center gap-1 cursor-pointer group transition-all duration-200 hover:scale-105"
       >
-        {currentUser.name}
+        <div
+          className="w-7 h-7 rounded-full flex items-center justify-center text-white font-semibold text-xs transition-transform duration-200 group-hover:scale-110"
+          style={{ backgroundColor: avatarColor }}
+        >
+          {initial}
+        </div>
+
+        <span className="font-medium text-white transition-colors duration-200 group-hover:text-orange-500">
+          {currentUser.name}
+        </span>
       </div>
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-44 bg-white border border-gray-200 rounded-lg shadow-lg py-2 text-gray-700 animate-fadeIn">
+        <div className="absolute right-0 mt-12 w-44 bg-white border border-gray-200 rounded-lg shadow-lg py-2 text-gray-700 animate-fadeIn">
           <button
             onClick={() => {
               setIsOpen(false);
