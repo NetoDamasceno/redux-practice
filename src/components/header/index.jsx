@@ -67,6 +67,7 @@ function Header() {
         )}
 
         <div
+          id="cart-icon"
           onClick={handleCartClick}
           className="relative group cursor-pointer transition-all duration-200 hover:text-orange-600 hover:scale-105"
         >
