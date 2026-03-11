@@ -1,4 +1,4 @@
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Trash2 } from "lucide-react";
 import { useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -12,6 +12,7 @@ import * as Styles from "./styles";
 
 // Redux
 import { selectProductsCount } from "../../redux/cart/cart.selectors";
+import { removeProduct } from "../../redux/cart/slice";
 import { login, logout } from "../../redux/user/slice";
 
 function Header() {
@@ -65,6 +66,9 @@ function Header() {
     }
   };
 
+  const previewProducts = products.slice(0, 3);
+  const remainingProducts = products.length - 3;
+
   return (
     <Styles.Container>
       <Styles.Logo onClick={handleLogoClick} style={{ cursor: "pointer" }}>
@@ -117,24 +121,45 @@ function Header() {
               </p>
             ) : (
               <>
-                <div className="max-h-60 overflow-y-auto flex flex-col gap-3">
-                  {products.slice(0, 3).map((product) => (
-                    <div key={product.id} className="flex items-center gap-3">
+                <div className="max-h-60 overflow-y-auto flex flex-col gap-2 pr-1">
+                  {previewProducts.map((product) => (
+                    <div
+                      key={product.id}
+                      className="group flex items-center gap-3 p-2 rounded-md transition-colors duration-200 hover:bg-gray-100"
+                    >
                       <img
                         src={product.imageUrl}
                         alt={product.name}
-                        className="w-12 h-12 object-cover rounded"
+                        className="w-12 h-12 object-cover rounded flex-shrink-0"
                       />
 
-                      <div className="flex flex-col text-xs">
-                        <span className="font-medium text-gray-800">
+                      <div className="flex flex-col flex-1 min-w-0 text-xs">
+                        <span className="font-medium text-gray-800 truncate">
                           {product.name}
                         </span>
 
                         <span className="text-gray-500">R${product.price}</span>
                       </div>
+
+                      {/* Remove button */}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          dispatch(removeProduct(product.id));
+                        }}
+                        className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-gray-400 hover:text-red-500"
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </div>
                   ))}
+
+                  {remainingProducts > 0 && (
+                    <div className="text-center text-xs text-gray-500 font-medium pt-2 border-t">
+                      +{remainingProducts}{" "}
+                      {remainingProducts === 1 ? "item" : "itens"}
+                    </div>
+                  )}
                 </div>
 
                 <button
