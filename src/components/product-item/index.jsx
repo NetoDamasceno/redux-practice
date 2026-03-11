@@ -13,7 +13,7 @@ import * as Styles from "./styles";
 
 const ProductItem = ({ product }) => {
   const dispatch = useDispatch();
-  const imageRef = useRef(null)
+  const imageRef = useRef(null);
 
   const handleProductClick = () => {
     const cart = document.getElementById("cart-icon");
@@ -48,6 +48,17 @@ const ProductItem = ({ product }) => {
 
     setTimeout(() => {
       flyingImg.remove();
+
+      const cart = document.getElementById("cart-icon");
+
+      if (cart) {
+        cart.classList.add("cart-bounce");
+
+        setTimeout(() => {
+          cart.classList.remove("cart-bounce");
+        }, 500);
+      }
+
       dispatch(addProduct(product));
     }, 800);
   };
