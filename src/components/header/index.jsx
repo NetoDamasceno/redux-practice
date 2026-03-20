@@ -12,7 +12,7 @@ import * as Styles from "./styles";
 
 // Redux
 import { selectProductsCount } from "../../redux/cart/cart.selectors";
-import { removeProduct } from "../../redux/cart/slice";
+import { removeProduct, clearCart } from "../../redux/cart/slice";
 import { login, logout } from "../../redux/user/slice";
 
 function Header() {
@@ -162,12 +162,28 @@ function Header() {
                   )}
                 </div>
 
-                <button
-                  onClick={handleCartClick}
-                  className="mt-4 w-full bg-orange-500 text-white text-sm py-2 rounded hover:bg-orange-600 transition"
-                >
-                  Ver carrinho
-                </button>
+                <div className="mt-4 flex flex-col gap-2">
+                  <button
+                    onClick={handleCartClick}
+                    className="w-full bg-orange-500 text-white text-sm py-2 rounded hover:bg-orange-600 transition"
+                  >
+                    Ver carrinho
+                  </button>
+
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+
+                      const confirm = window.confirm("Deseja esvaziar o carrinho?");
+                      if (confirm) {
+                        dispatch(clearCart());
+                      }
+                    }}
+                    className="w-full text-sm py-2 rounded border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200"
+                  >
+                    Esvaziar carrinho
+                  </button>
+                </div>
               </>
             )}
           </div>
