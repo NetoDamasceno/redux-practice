@@ -2,6 +2,7 @@ import { BsCartPlus } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import { useRef } from "react";
 import { addProduct } from "../../redux/cart/slice";
+import { openImage } from "../../redux/image-preview/slice"; // 👈 NOVO
 
 // Components
 import CustomButton from "../custom-button/index";
@@ -9,12 +10,11 @@ import CustomButton from "../custom-button/index";
 // Styles
 import * as Styles from "./styles";
 
-// Utilities
-
 const ProductItem = ({ product }) => {
   const dispatch = useDispatch();
   const imageRef = useRef(null);
 
+  // 🛒 Adicionar ao carrinho (mantém tua animação)
   const handleProductClick = () => {
     const cart = document.getElementById("cart-icon");
 
@@ -63,12 +63,27 @@ const ProductItem = ({ product }) => {
     }, 800);
   };
 
+  // 🔍 NOVO: abrir imagem no modal
+  const handleImageClick = () => {
+    dispatch(openImage(product.imageUrl));
+  };
+
   return (
     <Styles.ProductContainer>
-      <Styles.ProductImage ref={imageRef} imageUrl={product.imageUrl}>
-        <CustomButton startIcon={<BsCartPlus />} onClick={handleProductClick}>
-          Adicionar ao carrinho
-        </CustomButton>
+      <Styles.ProductImage
+        ref={imageRef}
+        imageUrl={product.imageUrl}
+        onClick={handleImageClick} // 👈 clique na imagem abre modal
+      >
+        {/* ⚠️ impede abrir modal ao clicar no botão */}
+        <div onClick={(e) => e.stopPropagation()}>
+          <CustomButton
+            startIcon={<BsCartPlus />}
+            onClick={handleProductClick}
+          >
+            Adicionar ao carrinho
+          </CustomButton>
+        </div>
       </Styles.ProductImage>
 
       <Styles.ProductInfo>

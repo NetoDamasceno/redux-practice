@@ -19,6 +19,7 @@ function Header() {
   const [cartIsVisible, setCartIsVisible] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isCartPreviewOpen, setIsCartPreviewOpen] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
 
   const timeoutRef = useRef(null);
 
@@ -121,7 +122,13 @@ function Header() {
               </p>
             ) : (
               <>
-                <div className="max-h-60 overflow-y-auto flex flex-col gap-2 pr-1">
+                <div
+                  className={`max-h-60 overflow-y-auto flex flex-col gap-2 pr-1 transition-all duration-300 ${
+                    isClearing
+                      ? "opacity-0 translate-y-4"
+                      : "opacity-100 translate-y-0"
+                  }`}
+                >
                   {previewProducts.map((product) => (
                     <div
                       key={product.id}
@@ -174,10 +181,17 @@ function Header() {
                     onClick={(e) => {
                       e.stopPropagation();
 
-                      const confirm = window.confirm("Deseja esvaziar o carrinho?");
-                      if (confirm) {
+                      const confirm = window.confirm(
+                        "Deseja esvaziar o carrinho?",
+                      );
+                      if (!confirm) return;
+
+                      setIsClearing(true);
+
+                      setTimeout(() => {
                         dispatch(clearCart());
-                      }
+                        setIsClearing(false);
+                      }, 300); // tempo da animação
                     }}
                     className="w-full text-sm py-2 rounded border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition-all duration-200"
                   >

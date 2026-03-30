@@ -2,6 +2,7 @@ import "./App.css";
 import Header from "./components/header";
 import Products from "./components/products";
 import Footer from "./components/footer";
+import ImageModal from "./components/image-modal";
 
 const App = () => {
   return (
@@ -9,6 +10,7 @@ const App = () => {
       <Header />
       <Products />
       <Footer />
+      <ImageModal />
     </div>
   );
 };

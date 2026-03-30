@@ -3,10 +3,12 @@ import styled from "styled-components";
 export const ProductContainer = styled.div`
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 
   &:hover {
-    transform: translateY(-6px) scale(1.05); /* efeito lift */
+    transform: translateY(-6px) scale(1.05);
     z-index: 2;
   }
 
@@ -35,15 +37,22 @@ export const ProductImage = styled.div`
   background-position: center;
   border-radius: 10px;
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+
   display: flex;
   align-items: flex-end;
+  justify-content: center;
+
   transition: all 0.35s ease;
+
+  cursor: pointer; /* ✅ cursor pointer */
+  overflow: hidden; /* ✅ impede vazamento */
 
   button {
     visibility: hidden;
     opacity: 0;
     transition: all 0.4s ease;
     margin: 20px;
+    max-width: 90%;
   }
 
   &:hover {
@@ -56,7 +65,22 @@ export const ProductImage = styled.div`
     }
   }
 
+  /* 📱 MOBILE GERAL */
   @media (max-width: 768px) {
-    width: 100%;
+    height: 300px;
+
+    button {
+      visibility: visible;
+      opacity: 1;
+      margin: 10px;
+      width: auto; /* 👈 volta ao normal */
+    }
+  }
+
+  /* 📱📱 TELAS MÉDIAS (onde geralmente tem 2 colunas) */
+  @media (max-width: 768px) and (min-width: 480px) {
+    button {
+      width: 90%; /* 👈 só aqui fica "grosso" */
+    }
   }
 `;
