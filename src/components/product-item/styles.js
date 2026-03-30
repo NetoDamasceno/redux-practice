@@ -19,12 +19,38 @@ export const ProductContainer = styled.div`
 
 export const ProductInfo = styled.div`
   display: flex;
-  justify-content: space-between;
-  margin-top: 5px;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 10px 5px;
 
-  p {
-    font-size: 1rem;
+  /* Nome do produto */
+  p:first-child {
+    font-size: 0.95rem;
     font-weight: 500;
+    color: #444;
+    line-height: 1.3;
+
+    /* Limita o nome a 2 linhas */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Preço */
+  p:last-child {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #111;
+
+    /* deixa o R$ menor que o valor */
+    span {
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-right: 2px;
+      color: #666;
+    }
   }
 `;
 
@@ -80,7 +106,7 @@ export const ProductImage = styled.div`
   /* 📱📱 TELAS MÉDIAS (onde geralmente tem 2 colunas) */
   @media (max-width: 768px) and (min-width: 480px) {
     button {
-      width: 90%; /* 👈 só aqui fica "grosso" */
+      width: clamp(140px, 80%, 220px);
     }
   }
 `;

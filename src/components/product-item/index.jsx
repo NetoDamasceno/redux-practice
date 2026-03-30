@@ -77,10 +77,7 @@ const ProductItem = ({ product }) => {
       >
         {/* ⚠️ impede abrir modal ao clicar no botão */}
         <div onClick={(e) => e.stopPropagation()}>
-          <CustomButton
-            startIcon={<BsCartPlus />}
-            onClick={handleProductClick}
-          >
+          <CustomButton startIcon={<BsCartPlus />} onClick={handleProductClick}>
             Adicionar ao carrinho
           </CustomButton>
         </div>
@@ -88,7 +85,10 @@ const ProductItem = ({ product }) => {
 
       <Styles.ProductInfo>
         <p>{product.name}</p>
-        <p>R${product.price}</p>
+        <p>
+          <span>R$</span>
+          {product.price}
+        </p>
       </Styles.ProductInfo>
     </Styles.ProductContainer>
   );
