@@ -20,36 +20,39 @@ export const ProductContainer = styled.div`
 export const ProductInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 10px;
-  padding: 10px 5px;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 0 4px 6px;
 
-  /* Nome do produto */
+  /* 🏷️ Nome do produto */
   p:first-child {
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #444;
-    line-height: 1.3;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #111; /* preto forte */
+    line-height: 1.4;
+    letter-spacing: -0.2px;
 
-    /* Limita o nome a 2 linhas */
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
-  /* Preço */
+  /* 💰 Preço */
   p:last-child {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #111;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #000; /* destaque máximo */
+    letter-spacing: -0.5px;
 
-    /* deixa o R$ menor que o valor */
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+
     span {
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-right: 2px;
-      color: #666;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #000; /* NÃO apagado mais */
     }
   }
 `;

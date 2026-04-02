@@ -14,6 +14,7 @@ import * as Styles from "./styles";
 import { selectProductsCount } from "../../redux/cart/cart.selectors";
 import { removeProduct, clearCart } from "../../redux/cart/slice";
 import { login, logout } from "../../redux/user/slice";
+import { setSearchTerm } from "../../redux/search/slice";
 
 function Header() {
   const [cartIsVisible, setCartIsVisible] = useState(false);
@@ -27,6 +28,8 @@ function Header() {
   const { products } = useSelector((rootReducer) => rootReducer.cartReducer);
 
   const productsCount = useSelector(selectProductsCount);
+
+  const searchTerm = useSelector((state) => state.search.searchTerm);
 
   const dispatch = useDispatch();
 
@@ -67,6 +70,10 @@ function Header() {
     }
   };
 
+  const handleSearchChange = (e) => {
+    dispatch(setSearchTerm(e.target.value));
+  };
+
   const previewProducts = products.slice(0, 3);
   const remainingProducts = products.length - 3;
 
@@ -75,6 +82,14 @@ function Header() {
       <Styles.Logo onClick={handleLogoClick} style={{ cursor: "pointer" }}>
         Redux Shopping
       </Styles.Logo>
+
+      <input
+        type="text"
+        placeholder="Buscar produtos..."
+        value={searchTerm}
+        onChange={handleSearchChange}
+        className="px-4 py-2 rounded-md text-black w-64 outline-none focus:ring-2 focus:ring-orange-500"
+      />
 
       <Styles.Buttons>
         {currentUser ? (
