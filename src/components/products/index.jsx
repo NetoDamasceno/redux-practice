@@ -7,12 +7,19 @@ import SkeletonCard from "../skeleton-card";
 
 import * as Styles from "./styles";
 
+const normalizeText = (text) =>
+  text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
 const Products = () => {
   const [loading, setLoading] = useState(true);
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  // 🔍 pega o termo de busca do Redux
   const searchTerm = useSelector((state) => state.search.searchTerm);
 
+  // ⏳ fake loading
   useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
@@ -21,9 +28,18 @@ const Products = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // 🔍 filtra os produtos
+  // 🔥 debounce (suaviza busca)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // 🔍 filtro com normalização
   const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    normalizeText(product.name).includes(normalizeText(debouncedSearch)),
   );
 
   return (
@@ -37,8 +53,7 @@ const Products = () => {
           <ProductItem key={product.id} product={product} />
         ))
       ) : (
-        // ❌ estado vazio elegante
-        <div className="w-full flex flex-col items-center justify-center py-16 text-gray-700">
+        <div className="col-span-full flex flex-col items-center justify-center py-20 text-gray-700 animate-fadeIn">
           <p className="text-xl font-semibold mb-2">
             Nenhum produto encontrado
           </p>
