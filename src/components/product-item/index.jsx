@@ -74,6 +74,7 @@ const ProductItem = ({ product }) => {
         ref={imageRef}
         imageUrl={product.imageUrl}
         onClick={handleImageClick} // 👈 clique na imagem abre modal
+        style={{ cursor: "zoom-in" }}
       >
         {/* ⚠️ impede abrir modal ao clicar no botão */}
         <div onClick={(e) => e.stopPropagation()}>
