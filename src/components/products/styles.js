@@ -7,5 +7,6 @@ export const Container = styled.div`
   padding: 40px;
   max-width: 1400px;
   margin: 0 auto;
+  background-color: transparent;
 `;
 

@@ -2,10 +2,11 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   width: 100%;
-  background-color: #222222;
+  background-color: #ffffff;
   display: flex;
   justify-content: space-between;
-  color: #eee;
+  color: #111827;
+  border-bottom: 1px solid #e5e7eb;
   padding: 20px;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
 `;

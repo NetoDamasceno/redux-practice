@@ -41,7 +41,7 @@ function UserDropdown({ currentUser }) {
           {initial}
         </div>
 
-        <span className="font-medium text-white transition-colors duration-200 group-hover:text-orange-500">
+        <span className="text-gray-900 font-medium hidden sm:block transition-colors duration-200 group-hover:text-orange-500">
           {currentUser.name}
         </span>
       </div>

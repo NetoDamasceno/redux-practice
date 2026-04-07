@@ -6,7 +6,7 @@ import ImageModal from "./components/image-modal";
 
 const App = () => {
   return (
-    <div className="bg-orange-300 min-h-screen flex flex-col">
+    <div className="bg-orange-100 min-h-screen flex flex-col">
       <Header />
       <div className="flex-1">
         <Products />
