@@ -24,6 +24,7 @@ function Header() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isCartPreviewOpen, setIsCartPreviewOpen] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const timeoutRef = useRef(null);
@@ -48,7 +49,6 @@ function Header() {
     }
   };
 
-  // 👇 fecha ao clicar fora
   useState(() => {
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
@@ -80,6 +80,23 @@ function Header() {
     }
   };
 
+  // 🔥 abrir modal
+  const handleClearCartClick = () => {
+    setIsConfirmModalOpen(true);
+  };
+
+  // 🔥 confirmar com animação
+  const handleConfirmClearCart = () => {
+    setIsClearing(true);
+
+    setTimeout(() => {
+      dispatch(clearCart());
+      setIsClearing(false);
+      setIsConfirmModalOpen(false);
+      setIsCartPreviewOpen(false);
+    }, 400); // tempo da animação
+  };
+
   const previewProducts = products.slice(0, 3);
   const remainingProducts = products.length - 3;
 
@@ -97,7 +114,7 @@ function Header() {
           value={searchTerm}
           onChange={handleSearchChange}
           onFocus={() => setIsSearchOpen(true)}
-          className="w-full px-4 py-2 rounded-md text-black outline-none focus:ring-2 focus:ring-orange-500"
+          className="w-full px-4 py-2 rounded-lg bg-gray-100 text-black outline-none border border-transparent transition-all duration-200 placeholder-gray-500 hover:bg-gray-200 focus:bg-white  focus:border-orange-500 focus:ring-2 focus:ring-orange-200  focus:shadow-sm"
         />
 
         {isSearchOpen && (
@@ -155,7 +172,11 @@ function Header() {
               </p>
             ) : (
               <>
-                <div className="max-h-60 overflow-y-auto flex flex-col gap-2 pr-1">
+                <div
+                  className={`max-h-60 overflow-y-auto flex flex-col gap-2 pr-1 transition-all duration-300 ${
+                    isClearing ? "opacity-0 scale-95" : "opacity-100 scale-100"
+                  }`}
+                >
                   {previewProducts.map((product) => (
                     <div
                       key={product.id}
@@ -196,8 +217,8 @@ function Header() {
                   </button>
 
                   <button
-                    onClick={() => dispatch(clearCart())}
-                    className="w-full py-2 border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white"
+                    onClick={handleClearCartClick}
+                    className="w-full py-2 border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition"
                   >
                     Esvaziar carrinho
                   </button>
@@ -207,6 +228,40 @@ function Header() {
           </div>
         </div>
       </Styles.Buttons>
+
+      {/* 🧠 MODAL DE CONFIRMAÇÃO */}
+      {isConfirmModalOpen && (
+        <div className="fixed inset-0 z-[999] flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setIsConfirmModalOpen(false)}
+          />
+
+          <div className="relative bg-white rounded-xl p-6 w-80 shadow-2xl animate-[fadeIn_0.2s_ease]">
+            <h2 className="text-lg font-semibold mb-2">Esvaziar carrinho?</h2>
+
+            <p className="text-sm text-gray-500 mb-4">
+              Essa ação removerá todos os produtos do seu carrinho.
+            </p>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => setIsConfirmModalOpen(false)}
+                className="flex-1 py-2 border rounded hover:bg-gray-100"
+              >
+                Cancelar
+              </button>
+
+              <button
+                onClick={handleConfirmClearCart}
+                className="flex-1 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+              >
+                {isClearing ? "Esvaziando..." : "Confirmar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Cart isVisible={cartIsVisible} setIsVisible={setCartIsVisible} />
 
