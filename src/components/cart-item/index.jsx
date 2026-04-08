@@ -1,7 +1,9 @@
 import { AiOutlinePlus, AiOutlineMinus, AiOutlineClose } from "react-icons/ai";
 import { useDispatch } from "react-redux";
+
 // Styles
 import * as Styles from "./styles";
+
 import {
   removeProduct,
   increaseProductQuantity,
@@ -11,21 +13,14 @@ import {
 const CartItem = ({ product }) => {
   const dispatch = useDispatch();
 
-  const handleRemoveClick = () => {
-    dispatch(removeProduct(product.id));
-  };
-
-  const handleIncreaseClick = () => {
-    dispatch(increaseProductQuantity(product.id));
-  };
-
-  const handleDecreaseClick = () => {
-    dispatch(decreaseProductQuantity(product.id));
-  };
-
   return (
     <Styles.CartItemContainer>
-      <Styles.CartItemImage imageUrl={product.imageUrl} />
+      {/* 🔥 AGORA COM LAZY LOAD */}
+      <Styles.CartItemImage
+        src={product.imageUrl}
+        alt={product.name}
+        loading="lazy"
+      />
 
       <Styles.CartItemInfo>
         <p>{product.name}</p>
@@ -34,22 +29,19 @@ const CartItem = ({ product }) => {
         <Styles.CartItemQuantity>
           <AiOutlineMinus
             size={20}
-            onClick={handleDecreaseClick}
-            aria-label={`Decrease quantity of ${product.name}`}
+            onClick={() => dispatch(decreaseProductQuantity(product.id))}
           />
+
           <p>{product.quantity}</p>
+
           <AiOutlinePlus
             size={20}
-            onClick={handleIncreaseClick}
-            aria-label={`Increase quantity of ${product.name}`}
+            onClick={() => dispatch(increaseProductQuantity(product.id))}
           />
         </Styles.CartItemQuantity>
       </Styles.CartItemInfo>
 
-      <Styles.RemoveButton
-        onClick={handleRemoveClick}
-        aria-label={`Remove ${product.name}`}
-      >
+      <Styles.RemoveButton onClick={() => dispatch(removeProduct(product.id))}>
         <AiOutlineClose size={25} />
       </Styles.RemoveButton>
     </Styles.CartItemContainer>
