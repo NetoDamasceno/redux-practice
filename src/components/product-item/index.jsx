@@ -1,8 +1,8 @@
 import { BsCartPlus } from "react-icons/bs";
 import { useDispatch } from "react-redux";
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { addProduct } from "../../redux/cart/slice";
-import { openImage } from "../../redux/image-preview/slice"; // 👈 NOVO
+import { openImage } from "../../redux/image-preview/slice";
 
 // Components
 import CustomButton from "../custom-button/index";
@@ -14,7 +14,30 @@ const ProductItem = ({ product }) => {
   const dispatch = useDispatch();
   const imageRef = useRef(null);
 
-  // 🛒 Adicionar ao carrinho (mantém tua animação)
+  // 🔥 lazy loading state
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      {
+        rootMargin: "100px", // carrega antes de aparecer
+      }
+    );
+
+    if (imageRef.current) {
+      observer.observe(imageRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  // 🛒 Adicionar ao carrinho
   const handleProductClick = () => {
     const cart = document.getElementById("cart-icon");
 
@@ -63,7 +86,7 @@ const ProductItem = ({ product }) => {
     }, 800);
   };
 
-  // 🔍 NOVO: abrir imagem no modal
+  // 🔍 abrir imagem
   const handleImageClick = () => {
     dispatch(openImage(product.imageUrl));
   };
@@ -72,11 +95,11 @@ const ProductItem = ({ product }) => {
     <Styles.ProductContainer>
       <Styles.ProductImage
         ref={imageRef}
-        imageUrl={product.imageUrl}
-        onClick={handleImageClick} // 👈 clique na imagem abre modal
+        imageUrl={isVisible ? product.imageUrl : ""} // 🔥 AQUI está o lazy load
+        onClick={handleImageClick}
         style={{ cursor: "zoom-in" }}
       >
-        {/* ⚠️ impede abrir modal ao clicar no botão */}
+        {/* botão */}
         <div onClick={(e) => e.stopPropagation()}>
           <CustomButton startIcon={<BsCartPlus />} onClick={handleProductClick}>
             Adicionar ao carrinho

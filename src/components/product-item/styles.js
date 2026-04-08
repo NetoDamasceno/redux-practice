@@ -24,11 +24,10 @@ export const ProductInfo = styled.div`
   margin-top: 12px;
   padding: 0 4px 6px;
 
-  /* 🏷️ Nome do produto */
   p:first-child {
     font-size: 1.05rem;
     font-weight: 600;
-    color: #111; /* preto forte */
+    color: #111;
     line-height: 1.4;
     letter-spacing: -0.2px;
 
@@ -38,11 +37,10 @@ export const ProductInfo = styled.div`
     overflow: hidden;
   }
 
-  /* 💰 Preço */
   p:last-child {
     font-size: 1.3rem;
     font-weight: 800;
-    color: #000; /* destaque máximo */
+    color: #000;
     letter-spacing: -0.5px;
 
     display: flex;
@@ -52,19 +50,26 @@ export const ProductInfo = styled.div`
     span {
       font-size: 0.95rem;
       font-weight: 600;
-      color: #000; /* NÃO apagado mais */
+      color: #000;
     }
   }
 `;
 
 export const ProductImage = styled.div`
-  background-image: ${(props) => `url('${props.imageUrl}')`};
+  background-image: ${(props) =>
+    props.imageUrl ? `url('${props.imageUrl}')` : "none"};
+
   height: 380px;
   width: 100%;
+  border-radius: 10px;
+
+  /* 🔥 skeleton enquanto não carrega */
+  background-color: ${(props) => (props.imageUrl ? "transparent" : "#f3f3f3")};
+
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  border-radius: 10px;
+
   box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
 
   display: flex;
@@ -73,8 +78,8 @@ export const ProductImage = styled.div`
 
   transition: all 0.35s ease;
 
-  cursor: pointer; /* ✅ cursor pointer */
-  overflow: hidden; /* ✅ impede vazamento */
+  cursor: pointer;
+  overflow: hidden;
 
   button {
     visibility: hidden;
@@ -94,7 +99,6 @@ export const ProductImage = styled.div`
     }
   }
 
-  /* 📱 MOBILE GERAL */
   @media (max-width: 768px) {
     height: 300px;
 
@@ -102,11 +106,10 @@ export const ProductImage = styled.div`
       visibility: visible;
       opacity: 1;
       margin: 10px;
-      width: auto; /* 👈 volta ao normal */
+      width: auto;
     }
   }
 
-  /* 📱📱 TELAS MÉDIAS (onde geralmente tem 2 colunas) */
   @media (max-width: 768px) and (min-width: 480px) {
     button {
       width: clamp(140px, 80%, 220px);
