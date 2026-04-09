@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 // Styles
 import * as Styles from "./styles";
 
+import { formatPrice } from "../../utils/formatPrice";
+
 import {
   removeProduct,
   increaseProductQuantity,
@@ -24,7 +26,7 @@ const CartItem = ({ product }) => {
 
       <Styles.CartItemInfo>
         <p>{product.name}</p>
-        <p>R${product.price}</p>
+        <p>{formatPrice(product.price)}</p>
 
         <Styles.CartItemQuantity>
           <AiOutlineMinus

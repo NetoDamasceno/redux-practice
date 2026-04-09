@@ -6,6 +6,8 @@ import * as Styles from "./styles";
 import CartItem from "../cart-item/index";
 import { selectProductsTotalPrice } from "../../redux/cart/cart.selectors";
 
+import { formatPrice } from "../../utils/formatPrice";
+
 const Cart = ({ isVisible, setIsVisible }) => {
   const handleEscapeAreaClick = () => setIsVisible(false);
 
@@ -42,7 +44,7 @@ const Cart = ({ isVisible, setIsVisible }) => {
         <Styles.CartFooter>
           <Styles.TotalRow>
             <span>Total</span>
-            <strong>R$ {productsTotalPrice}</strong>
+            <strong>{formatPrice(productsTotalPrice)}</strong>
           </Styles.TotalRow>
 
           <Styles.CheckoutButton>

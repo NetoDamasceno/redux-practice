@@ -10,6 +10,8 @@ import CustomButton from "../custom-button/index";
 // Styles
 import * as Styles from "./styles";
 
+import { formatPrice } from "../../utils/formatPrice";
+
 const ProductItem = ({ product }) => {
   const dispatch = useDispatch();
   const imageRef = useRef(null);
@@ -109,10 +111,7 @@ const ProductItem = ({ product }) => {
 
       <Styles.ProductInfo>
         <p>{product.name}</p>
-        <p>
-          <span>R$</span>
-          {product.price}
-        </p>
+        <p>{formatPrice(product.price)}</p>
       </Styles.ProductInfo>
     </Styles.ProductContainer>
   );
