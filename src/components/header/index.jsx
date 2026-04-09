@@ -107,14 +107,14 @@ function Header() {
       </Styles.Logo>
 
       {/* 🔍 SEARCH */}
-      <div className="relative w-72" ref={searchRef}>
+      <div className="relative w-72 max-w-[50vw] mr-6 sm:mr-10" ref={searchRef}>
         <input
           type="text"
           placeholder="Buscar produtos..."
           value={searchTerm}
           onChange={handleSearchChange}
           onFocus={() => setIsSearchOpen(true)}
-          className="w-full px-4 py-2 rounded-lg bg-gray-100 text-black outline-none border border-transparent transition-all duration-200 placeholder-gray-500 hover:bg-gray-200 focus:bg-white  focus:border-orange-500 focus:ring-2 focus:ring-orange-200  focus:shadow-sm"
+          className="w-full px-4 py-2 rounded-lg bg-gray-100 text-black outline-none border border-transparent transition-all duration-200 placeholder-gray-500 hover:bg-gray-200 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:shadow-sm"
         />
 
         {isSearchOpen && (
@@ -229,7 +229,7 @@ function Header() {
         </div>
       </Styles.Buttons>
 
-      {/* 🧠 MODAL DE CONFIRMAÇÃO */}
+      {/* MODAL */}
       {isConfirmModalOpen && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center">
           <div
