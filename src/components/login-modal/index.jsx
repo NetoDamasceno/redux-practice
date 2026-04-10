@@ -8,15 +8,48 @@ function LoginModal({ isOpen, onClose }) {
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
 
   if (!isOpen) return null;
+
+  const validateName = (name) => {
+    const trimmed = name.trim().replace(/\s+/g, " ");
+
+    if (trimmed.length < 2) {
+      return "O nome deve ter pelo menos 2 caracteres.";
+    }
+
+    if (trimmed.length > 30) {
+      return "O nome deve ter no máximo 30 caracteres.";
+    }
+
+    if (!/^[A-Za-zÀ-ÿ\s]+$/.test(trimmed)) {
+      return "O nome deve conter apenas letras.";
+    }
+
+    return null;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!name || !email) return;
+    const cleanedName = name.trim().replace(/\s+/g, " ");
 
-    dispatch(login({ name, email }));
+    if (!cleanedName || !email) {
+      setError("Preencha todos os campos.");
+      return;
+    }
+
+    const nameError = validateName(cleanedName);
+
+    if (nameError) {
+      setError(nameError);
+      return;
+    }
+
+    setError("");
+
+    dispatch(login({ name: cleanedName, email }));
     onClose();
   };
 
@@ -42,22 +75,43 @@ function LoginModal({ isOpen, onClose }) {
         </h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* INPUT NOME */}
           <input
             type="text"
             placeholder="Nome"
+            maxLength={30}
             className="border border-gray-300 bg-white text-gray-800 placeholder-gray-400 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+
+              const sanitized = value.replace(/[^A-Za-zÀ-ÿ\s]/g, "");
+
+              setName(sanitized);
+              setError("");
+            }}
           />
 
+          {/* INPUT EMAIL */}
           <input
             type="email"
             placeholder="Email"
             className="border border-gray-300 bg-white text-gray-800 placeholder-gray-400 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setError("");
+            }}
           />
 
+          {/* 🔴 ERRO (EXATAMENTE AQUI) */}
+          {error && (
+            <span className="text-red-500 text-sm -mt-2">
+              {error}
+            </span>
+          )}
+
+          {/* BOTÃO */}
           <button
             type="submit"
             className="bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600 transition font-medium"
