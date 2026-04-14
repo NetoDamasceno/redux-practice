@@ -22,6 +22,10 @@ const CartItem = ({ product }) => {
         src={product.imageUrl}
         alt={product.name}
         loading="lazy"
+        onError={(e) => {
+          e.target.onerror = null; // evita loop
+          e.target.src = "/image_fallback.png";
+        }}
       />
 
       <Styles.CartItemInfo>

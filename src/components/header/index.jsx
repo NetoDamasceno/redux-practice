@@ -98,7 +98,6 @@ function Header() {
   };
 
   const previewProducts = products.slice(0, 3);
-  const remainingProducts = products.length - 3;
 
   return (
     <Styles.Container>

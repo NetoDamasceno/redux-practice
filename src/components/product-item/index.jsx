@@ -16,9 +16,16 @@ const ProductItem = ({ product }) => {
   const dispatch = useDispatch();
   const imageRef = useRef(null);
 
-  // 🔥 lazy loading state
+  // 🔥 lazy loading
   const [isVisible, setIsVisible] = useState(false);
 
+  // ❌ erro na imagem
+  const [imageError, setImageError] = useState(false);
+
+  // ✨ fade suave
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // 👁️ observer (lazy load)
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -28,7 +35,7 @@ const ProductItem = ({ product }) => {
         }
       },
       {
-        rootMargin: "100px", // carrega antes de aparecer
+        rootMargin: "100px",
       }
     );
 
@@ -38,6 +45,23 @@ const ProductItem = ({ product }) => {
 
     return () => observer.disconnect();
   }, []);
+
+  // 🧠 detectar erro OU sucesso da imagem
+  useEffect(() => {
+    if (!isVisible || !product.imageUrl) return;
+
+    const img = new Image();
+    img.src = product.imageUrl;
+
+    img.onload = () => {
+      setIsLoaded(true);
+    };
+
+    img.onerror = () => {
+      setImageError(true);
+      setIsLoaded(true); // 🔥 importante pro fade funcionar também no fallback
+    };
+  }, [isVisible, product.imageUrl]);
 
   // 🛒 Adicionar ao carrinho
   const handleProductClick = () => {
@@ -97,9 +121,19 @@ const ProductItem = ({ product }) => {
     <Styles.ProductContainer>
       <Styles.ProductImage
         ref={imageRef}
-        imageUrl={isVisible ? product.imageUrl : ""} // 🔥 AQUI está o lazy load
+        imageUrl={
+          isVisible
+            ? imageError
+              ? "/image_fallback.png"
+              : product.imageUrl
+            : ""
+        }
         onClick={handleImageClick}
-        style={{ cursor: "zoom-in" }}
+        style={{
+          cursor: "zoom-in",
+          opacity: isLoaded ? 1 : 0, // ✨ fade
+          transition: "opacity 0.4s ease",
+        }}
       >
         {/* botão */}
         <div onClick={(e) => e.stopPropagation()}>
