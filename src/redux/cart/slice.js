@@ -1,18 +1,36 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// 🔥 pegar do localStorage
+const CART_EXPIRATION_TIME = 1000 * 60 * 60 * 24; // 24h
+
+// 🔥 pegar do localStorage com expiração
 const loadCartFromLocalStorage = () => {
   try {
-    const cart = localStorage.getItem("cart");
-    return cart ? JSON.parse(cart) : [];
+    const stored = localStorage.getItem("cart");
+
+    if (!stored) return [];
+
+    const parsed = JSON.parse(stored);
+
+    // ⏰ verifica expiração
+    if (Date.now() > parsed.expiresAt) {
+      localStorage.removeItem("cart");
+      return [];
+    }
+
+    return parsed.data || [];
   } catch {
     return [];
   }
 };
 
-// 🔥 salvar no localStorage
+// 🔥 salvar com expiração
 const saveCartToLocalStorage = (products) => {
-  localStorage.setItem("cart", JSON.stringify(products));
+  const payload = {
+    data: products,
+    expiresAt: Date.now() + CART_EXPIRATION_TIME,
+  };
+
+  localStorage.setItem("cart", JSON.stringify(payload));
 };
 
 const initialState = {
@@ -25,14 +43,14 @@ const cartSlice = createSlice({
   reducers: {
     addProduct: (state, action) => {
       const productIsAlreadyInCart = state.products.some(
-        (product) => product.id === action.payload.id,
+        (product) => product.id === action.payload.id
       );
 
       if (productIsAlreadyInCart) {
         state.products = state.products.map((product) =>
           product.id === action.payload.id
             ? { ...product, quantity: product.quantity + 1 }
-            : product,
+            : product
         );
       } else {
         state.products = [
@@ -48,7 +66,7 @@ const cartSlice = createSlice({
       state.products = state.products.map((product) =>
         product.id === action.payload
           ? { ...product, quantity: product.quantity + 1 }
-          : product,
+          : product
       );
 
       saveCartToLocalStorage(state.products);
@@ -59,7 +77,7 @@ const cartSlice = createSlice({
         .map((product) =>
           product.id === action.payload
             ? { ...product, quantity: product.quantity - 1 }
-            : product,
+            : product
         )
         .filter((product) => product.quantity > 0);
 
@@ -68,7 +86,7 @@ const cartSlice = createSlice({
 
     removeProduct: (state, action) => {
       state.products = state.products.filter(
-        (product) => product.id !== action.payload,
+        (product) => product.id !== action.payload
       );
 
       saveCartToLocalStorage(state.products);

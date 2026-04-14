@@ -1,9 +1,25 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// 🔥 pega do localStorage ao iniciar
+const USER_EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7; // 7 dias
+
+// 🔥 pegar do localStorage com expiração
 const getUserFromStorage = () => {
-  const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
+  try {
+    const stored = localStorage.getItem("user");
+
+    if (!stored) return null;
+
+    const parsed = JSON.parse(stored);
+
+    if (Date.now() > parsed.expiresAt) {
+      localStorage.removeItem("user");
+      return null;
+    }
+
+    return parsed.data || null;
+  } catch {
+    return null;
+  }
 };
 
 const initialState = {
@@ -17,14 +33,16 @@ const userSlice = createSlice({
     login: (state, action) => {
       state.currentUser = action.payload;
 
-      // 💾 salva no localStorage
-      localStorage.setItem("user", JSON.stringify(action.payload));
+      const payload = {
+        data: action.payload,
+        expiresAt: Date.now() + USER_EXPIRATION_TIME,
+      };
+
+      localStorage.setItem("user", JSON.stringify(payload));
     },
 
     logout: (state) => {
       state.currentUser = null;
-
-      // 🗑 remove do localStorage
       localStorage.removeItem("user");
     },
   },
