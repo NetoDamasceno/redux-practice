@@ -1,4 +1,5 @@
 import { siGithub } from "simple-icons/icons";
+import { siWhatsapp } from "simple-icons/icons";
 
 function BrandIcon({ icon, size = 20 }) {
   return (
@@ -14,4 +15,4 @@ function BrandIcon({ icon, size = 20 }) {
   );
 }
 
-export { BrandIcon, siGithub };
+export { BrandIcon, siGithub, siWhatsapp };
