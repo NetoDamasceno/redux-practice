@@ -99,6 +99,8 @@ function Header() {
 
   const previewProducts = products.slice(0, 3);
 
+  const remainingItems = products.length - 3;
+
   return (
     <Styles.Container>
       <Styles.Logo onClick={handleLogoClick} style={{ cursor: "pointer" }}>
@@ -205,6 +207,14 @@ function Header() {
                       </button>
                     </div>
                   ))}
+
+                  {/* 🔥 AQUI */}
+                  {remainingItems > 0 && (
+                    <div onClick={handleCartClick} className="text-center text-xs text-gray-500 mt-2">
+                      +{remainingItems}{" "}
+                      {remainingItems === 1 ? "item" : "itens"}
+                    </div>
+                  )}
                 </div>
 
                 <div className="mt-4 flex flex-col gap-2">
