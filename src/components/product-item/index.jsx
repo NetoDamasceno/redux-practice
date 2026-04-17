@@ -1,4 +1,4 @@
-import { BsCartPlus } from "react-icons/bs";
+import { BsCartPlus, BsCheck } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import { useRef, useEffect, useState } from "react";
 import { addProduct } from "../../redux/cart/slice";
@@ -25,6 +25,8 @@ const ProductItem = ({ product }) => {
   // ✨ fade suave
   const [isLoaded, setIsLoaded] = useState(false);
 
+  const [isAdded, setIsAdded] = useState(false);
+
   // 👁️ observer (lazy load)
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -36,7 +38,7 @@ const ProductItem = ({ product }) => {
       },
       {
         rootMargin: "100px",
-      }
+      },
     );
 
     if (imageRef.current) {
@@ -65,6 +67,13 @@ const ProductItem = ({ product }) => {
 
   // 🛒 Adicionar ao carrinho
   const handleProductClick = () => {
+    // 🔥 feedback IMEDIATO
+    setIsAdded(true);
+
+    setTimeout(() => {
+      setIsAdded(false);
+    }, 1500);
+
     const cart = document.getElementById("cart-icon");
 
     if (!cart || !imageRef.current) {
@@ -97,8 +106,6 @@ const ProductItem = ({ product }) => {
 
     setTimeout(() => {
       flyingImg.remove();
-
-      const cart = document.getElementById("cart-icon");
 
       if (cart) {
         cart.classList.add("cart-bounce");
@@ -137,8 +144,15 @@ const ProductItem = ({ product }) => {
       >
         {/* botão */}
         <div onClick={(e) => e.stopPropagation()}>
-          <CustomButton startIcon={<BsCartPlus />} onClick={handleProductClick}>
-            Adicionar ao carrinho
+          <CustomButton
+            startIcon={isAdded ? <BsCheck /> : <BsCartPlus />}
+            onClick={handleProductClick}
+            style={{
+              backgroundColor: isAdded ? "#16a34a" : "",
+              transition: "all 0.3s ease",
+            }}
+          >
+            {isAdded ? "Adicionado" : "Adicionar ao carrinho"}
           </CustomButton>
         </div>
       </Styles.ProductImage>
