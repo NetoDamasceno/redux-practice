@@ -1,5 +1,5 @@
 import { ShoppingCart, Trash2 } from "lucide-react";
-import { useState, useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 // Components
@@ -16,19 +16,37 @@ import { selectProductsCount } from "../../redux/cart/cart.selectors";
 import { removeProduct, clearCart } from "../../redux/cart/slice";
 import { setSearchTerm } from "../../redux/search/slice";
 
+// UI Slice 👇
+import {
+  openCart,
+  closeCart,
+  openLoginModal,
+  closeLoginModal,
+  openCartPreview,
+  closeCartPreview,
+  openConfirmClearCart,
+  closeConfirmClearCart,
+  openSearch,
+  closeSearch,
+} from "../../redux/ui/slice";
+
 // Data
 import allProducts from "../../data/products";
 
 function Header() {
-  const [cartIsVisible, setCartIsVisible] = useState(false);
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isCartPreviewOpen, setIsCartPreviewOpen] = useState(false);
-  const [isClearing, setIsClearing] = useState(false);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const timeoutRef = useRef(null);
   const searchRef = useRef(null);
+
+  // 🔥 Redux states
+  const {
+    cartOpen,
+    loginModalOpen,
+    cartPreviewOpen,
+    confirmClearCartOpen,
+    searchOpen,
+  } = useSelector((state) => state.ui);
 
   const { currentUser } = useSelector((state) => state.userReducer);
   const { products } = useSelector((state) => state.cartReducer);
@@ -36,42 +54,45 @@ function Header() {
 
   const productsCount = useSelector(selectProductsCount);
 
-  const dispatch = useDispatch();
+  // 🔥 único state local (animação)
+  const [isClearing, setIsClearing] = useState(false);
 
+  // 🔍 SEARCH
   const handleSearchChange = (e) => {
     dispatch(setSearchTerm(e.target.value));
-    setIsSearchOpen(true);
+    dispatch(openSearch());
   };
 
   const handleClickOutside = (e) => {
     if (searchRef.current && !searchRef.current.contains(e.target)) {
-      setIsSearchOpen(false);
+      dispatch(closeSearch());
     }
   };
 
-  useState(() => {
+  useEffect(() => {
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  // 🛒 CART PREVIEW
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setIsCartPreviewOpen(true);
+    dispatch(openCartPreview());
   };
 
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
-      setIsCartPreviewOpen(false);
+      dispatch(closeCartPreview());
     }, 150);
   };
 
   const handleCartClick = () => {
-    setCartIsVisible(true);
-    setIsCartPreviewOpen(false);
+    dispatch(openCart());
+    dispatch(closeCartPreview());
   };
 
   const handleLogoClick = () => {
-    setCartIsVisible(false);
+    dispatch(closeCart());
 
     if (window.scrollY === 0) {
       window.location.reload();
@@ -80,25 +101,23 @@ function Header() {
     }
   };
 
-  // 🔥 abrir modal
+  // 🔥 CLEAR CART
   const handleClearCartClick = () => {
-    setIsConfirmModalOpen(true);
+    dispatch(openConfirmClearCart());
   };
 
-  // 🔥 confirmar com animação
   const handleConfirmClearCart = () => {
     setIsClearing(true);
 
     setTimeout(() => {
       dispatch(clearCart());
       setIsClearing(false);
-      setIsConfirmModalOpen(false);
-      setIsCartPreviewOpen(false);
-    }, 400); // tempo da animação
+      dispatch(closeConfirmClearCart());
+      dispatch(closeCartPreview());
+    }, 400);
   };
 
   const previewProducts = products.slice(0, 3);
-
   const remainingItems = products.length - 3;
 
   return (
@@ -114,15 +133,15 @@ function Header() {
           placeholder="Buscar produtos..."
           value={searchTerm}
           onChange={handleSearchChange}
-          onFocus={() => setIsSearchOpen(true)}
+          onFocus={() => dispatch(openSearch())}
           className="w-full px-4 py-2 rounded-lg bg-gray-100 text-black outline-none border border-transparent transition-all duration-200 placeholder-gray-500 hover:bg-gray-200 focus:bg-white focus:border-orange-500 focus:ring-2 focus:ring-orange-200 focus:shadow-sm"
         />
 
-        {isSearchOpen && (
+        {searchOpen && (
           <SearchDropdown
             searchTerm={searchTerm}
             products={allProducts}
-            onClose={() => setIsSearchOpen(false)}
+            onClose={() => dispatch(closeSearch())}
           />
         )}
       </div>
@@ -132,7 +151,7 @@ function Header() {
           <UserDropdown currentUser={currentUser} />
         ) : (
           <div
-            onClick={() => setIsLoginOpen(true)}
+            onClick={() => dispatch(openLoginModal())}
             className="cursor-pointer transition-all duration-200 hover:text-orange-600 hover:scale-105"
           >
             Login
@@ -162,7 +181,7 @@ function Header() {
           {/* PREVIEW */}
           <div
             className={`absolute right-0 mt-4 w-72 bg-white text-gray-700 text-sm rounded-md shadow-xl p-4 transition-all duration-300 z-50 ${
-              isCartPreviewOpen
+              cartPreviewOpen
                 ? "opacity-100 translate-y-0 pointer-events-auto"
                 : "opacity-0 translate-y-2 pointer-events-none"
             }`}
@@ -193,7 +212,9 @@ function Header() {
                         <span className="font-medium text-gray-800 truncate">
                           {product.name}
                         </span>
-                        <span className="text-gray-500">R${product.price}</span>
+                        <span className="text-gray-500">
+                          R${product.price}
+                        </span>
                       </div>
 
                       <button
@@ -208,9 +229,11 @@ function Header() {
                     </div>
                   ))}
 
-                  {/* 🔥 AQUI */}
                   {remainingItems > 0 && (
-                    <div onClick={handleCartClick} className="text-center text-xs text-gray-500 mt-2">
+                    <div
+                      onClick={handleCartClick}
+                      className="text-center text-xs text-gray-500 mt-2"
+                    >
                       +{remainingItems}{" "}
                       {remainingItems === 1 ? "item" : "itens"}
                     </div>
@@ -239,15 +262,17 @@ function Header() {
       </Styles.Buttons>
 
       {/* MODAL */}
-      {isConfirmModalOpen && (
+      {confirmClearCartOpen && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setIsConfirmModalOpen(false)}
+            onClick={() => dispatch(closeConfirmClearCart())}
           />
 
           <div className="relative bg-white rounded-xl p-6 w-80 shadow-2xl animate-[fadeIn_0.2s_ease]">
-            <h2 className="text-lg font-semibold mb-2">Esvaziar carrinho?</h2>
+            <h2 className="text-lg font-semibold mb-2">
+              Esvaziar carrinho?
+            </h2>
 
             <p className="text-sm text-gray-500 mb-4">
               Essa ação removerá todos os produtos do seu carrinho.
@@ -255,7 +280,7 @@ function Header() {
 
             <div className="flex gap-2">
               <button
-                onClick={() => setIsConfirmModalOpen(false)}
+                onClick={() => dispatch(closeConfirmClearCart())}
                 className="flex-1 py-2 border rounded hover:bg-gray-100"
               >
                 Cancelar
@@ -272,9 +297,12 @@ function Header() {
         </div>
       )}
 
-      <Cart isVisible={cartIsVisible} setIsVisible={setCartIsVisible} />
+      <Cart isVisible={cartOpen} setIsVisible={() => dispatch(closeCart())} />
 
-      <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
+      <LoginModal
+        isOpen={loginModalOpen}
+        onClose={() => dispatch(closeLoginModal())}
+      />
     </Styles.Container>
   );
 }
