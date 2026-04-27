@@ -1,5 +1,5 @@
 import { ShoppingCart, Trash2 } from "lucide-react";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 // Components
@@ -63,16 +63,19 @@ function Header() {
     dispatch(openSearch());
   };
 
-  const handleClickOutside = (e) => {
-    if (searchRef.current && !searchRef.current.contains(e.target)) {
-      dispatch(closeSearch());
-    }
-  };
+  const handleClickOutside = useCallback(
+    (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        dispatch(closeSearch());
+      }
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
+  }, [handleClickOutside]);
 
   // 🛒 CART PREVIEW
   const handleMouseEnter = () => {
@@ -212,9 +215,7 @@ function Header() {
                         <span className="font-medium text-gray-800 truncate">
                           {product.name}
                         </span>
-                        <span className="text-gray-500">
-                          R${product.price}
-                        </span>
+                        <span className="text-gray-500">R${product.price}</span>
                       </div>
 
                       <button
@@ -270,9 +271,7 @@ function Header() {
           />
 
           <div className="relative bg-white rounded-xl p-6 w-80 shadow-2xl animate-[fadeIn_0.2s_ease]">
-            <h2 className="text-lg font-semibold mb-2">
-              Esvaziar carrinho?
-            </h2>
+            <h2 className="text-lg font-semibold mb-2">Esvaziar carrinho?</h2>
 
             <p className="text-sm text-gray-500 mb-4">
               Essa ação removerá todos os produtos do seu carrinho.
